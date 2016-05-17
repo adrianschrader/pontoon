@@ -1,0 +1,95 @@
+@startuml
+
+skinparam monochrome false
+top to bottom direction
+
+abstract class Player {
+    - String name
+    - int score
+    __
+    + Player(String name)
+    + String getName() 
+    + int getScore()
+    + void resetScore()
+    ..
+    {abstract} + void play(Dice dice, int goalScore)
+    # void rollDice(Dice dice)
+}
+
+class BalancedPlayer {
+    + BalancedPlayer(String name)
+    ..
+    + play(Dice dice, int goalScore)
+}
+
+class AnxiousPlayer {
+    + AnxiousPlayer(String name)
+    ..
+    + play(Dice dice, int goalScore)
+}
+
+class DumbPlayer {
+    + DumbPlayer(String name)
+    ..
+    + play(Dice dice, int goalScore)
+}
+
+class StatisticanPlayer {
+    + StatisticanPlayer(String name)
+    ..
+    + play(Dice dice, int goalScore)
+}
+
+class Dice {
+    - Random random
+    - int faces
+    __
+    + Dice(int faces)
+    + int getFaces()
+    + int getAverage()
+    + int[] getOutcomes()
+    + double getMeanValue()
+    ..
+    + int roll()
+}
+
+class GameMaster {
+    {static} + String PLAYER_NAME_STUMP
+    - ArrayList<Player> players
+    - ArrayList<Result> results
+    - Dice dice
+    __
+    + GameMaster(Dice dice, Class<?>[] playerTypes)
+    + GameMaster(Dice dice, ArrayList<?> players)
+    + ArrayList<Player> getPlayers()
+    + ArrayList<Result> getResults()
+    + Result getLastResult()
+    + Dice getDice()
+    ..
+    + Result playRound(int goalScore)
+}
+
+class Result {
+    - boolean tie
+    - Player winner
+    - Player runnerup
+    __
+    + Result(boolean tie, Player winner, Player runnerup)
+    + boolean isTie()
+    + Player getWinner()
+    + Player getRunnerup()
+    + Player getResult() <<Nullable>>
+}
+
+BalancedPlayer -right-|> Player
+AnxiousPlayer -down-|> Player
+DumbPlayer -up-|> Player
+StatisticanPlayer -up-|> Player
+
+
+GameMaster "1" ..> "1" Dice : dice
+GameMaster "1" ..> "1..*" Player : players
+GameMaster "1" ..> "0..*" Result : results
+Player "0..*" .right.> "1" Dice : play, rollDice
+
+@enduml

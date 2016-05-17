@@ -49,7 +49,10 @@ public class Dice {
         return outcomes;
     }
     
-    public double getMeanValue() {
+    /**
+     * @return Expected value of the dice
+     */
+    public double getMean() {
         return IntStream.of(this.getOutcomes()).average().orElse(0);
     }
     

@@ -14,23 +14,26 @@ public class GameMaster {
     
     private final Dice dice;
     private final ArrayList<Player> players;
+    private       ArrayList<Result> results;
     
-    public GameMaster(int diceFaces, Class<?> playerTypes[]) throws IllegalAccessException, InstantiationException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+    public GameMaster(Dice dice, Class<?> playerTypes[]) throws IllegalAccessException, InstantiationException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+        this.results = new ArrayList<>();
         this.players = new ArrayList<>();
         for (Class<?> playerType : playerTypes) {
             String newPlayerName = LABEL_NAME + players.size();
             Player newPlayer = (Player)(playerType.getConstructor(new Class<?>[] { String.class }).newInstance(newPlayerName));
             this.players.add(newPlayer);
         }
-        this.dice = new Dice(diceFaces);
+        this.dice = dice;
     }
     
-    public GameMaster(int diceFaces, ArrayList<Player> players) {
+    public GameMaster(Dice dice, ArrayList<Player> players) {
+        this.results = new ArrayList<>();
         this.players = players;
-        this.dice = new Dice(diceFaces);
+        this.dice = dice;
     }
     
-    public void begin(int goalScore, int rounds) {
+    public Result playRound(int goalScore) {
         // Every player gets one turn
         for (Player player : this.players) {
             player.resetScore();
@@ -45,42 +48,52 @@ public class GameMaster {
             
             // If the distance is negative, players get dismissed
             if (distA > goalScore || distB > goalScore) {
-                int val = (distA > goalScore && distB > goalScore) ? 0 :
+                return (distA > goalScore && distB > goalScore) ? 0 :
                         (distA > goalScore) ? 1 : -1;
-                return val;
             }
             
             // Sort the remaining players by the least distance to the goal
-            int val = distA > distB ? -1 : distA == distB ? 0 : 1;
-            return val;
+            return distA > distB ? -1 : distA == distB ? 0 : 1;
         });
         
+        // Tie occurs when both players have the same score or both surpass
+        // the maximum score
         Player winner = this.players.get(0);
-        if (this.players.get(0).getScore() <= goalScore) {
-            if (this.players.get(0).getScore() > this.players.get(1).getScore()) {
-                System.out.println(winner.getName() + " hat mit " + winner.getScore() + " Punkten gewonnen. ");
-            } else {
-                System.out.println("Es steht unendschieden. ");
-            }
-        } else {
-            System.out.println("Upps... Ich habe falsch sortiert. ");
-        }
+        Player runnerup = this.players.get(1);
+        boolean tie = (winner.getScore() > goalScore || winner.getScore() == runnerup.getScore());
         
+        Result result = new Result(tie, winner, runnerup);
+        this.results.add(result);
+        return result;
         
         // Repeat with every round
-        if (rounds - 1 > 0) {
-            this.begin(goalScore, rounds - 1);
-        }
+        /*if (rounds - 1 > 0) {
+            this.playRound(goalScore, rounds - 1);
+        }*/
     }
     
-    public Player getWinner() {
-        return this.players.get(0);
+    public void resetResults() {
+        this.results = new ArrayList<Result>();
+    }
+    
+    /**
+     * @return the last element of the result list
+     */
+    public Result getLastResult() {
+        return this.results.get(this.results.size() - 1);
+    }
+    
+    /**
+     * @return the results list
+     */
+    public ArrayList<Result> getResults() {
+        return this.results;
     }
 
     /**
-     * @return the players
+     * @return the players list
      */
-    public List<Player> getPlayers() {
+    public ArrayList<Player> getPlayers() {
         return this.players;
     }
 }

@@ -19,7 +19,7 @@ public class StatisticianPlayer extends Player {
     @Override
     public void play(Dice dice, int goalScore) {
         double risk = 2;
-        for (int i = 0; i < Math.round(dice.getMeanValue() + risk); i++) {
+        for (int i = 0; i < Math.round(dice.getMean() + risk); i++) {
             this.rollDice(dice);
         }
     }

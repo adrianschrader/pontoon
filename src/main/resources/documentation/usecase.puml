@@ -1,0 +1,32 @@
+@startuml
+
+skinparam monochrome true
+top to bottom direction
+title Anwendungsfalldiagramm - Spiel 17 und 4
+
+:Spieler: as Player
+:Würfel: as Dice
+:Spielleiter: as Master
+
+rectangle "17 und 4" {
+    (Würfeln) as roll
+    (Ergebnis zurückgeben) as getScore
+    (Spielzug ausführen) as turn
+    (Zufallszahl ermitteln) as getRandom
+    (Gewinner ermitteln) as getWinner
+    (Runde spielen) as play
+}
+
+Dice -> getRandom
+Player -> turn
+Player -> roll
+Player -> getScore
+Master -> play
+Master -> getWinner
+
+roll "1" .left.> "1" getRandom
+getWinner "1" ..> "1..*" getScore
+play "1" ..> "1..*" turn
+turn "1" ..> "0..*" roll
+
+@enduml

@@ -18,7 +18,7 @@ public class BalancedPlayer extends Player {
     @Override
     public void play(Dice dice, int goalScore) {
         this.rollDice(dice);
-        if (this.getScore() < goalScore - Math.floor(dice.getMeanValue())) {
+        if (this.getScore() < goalScore - Math.floor(dice.getMean())) {
             play(dice, goalScore);
         }
     }

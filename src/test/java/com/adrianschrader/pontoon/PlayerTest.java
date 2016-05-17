@@ -5,10 +5,6 @@
  */
 package com.adrianschrader.pontoon;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.*;
 
@@ -20,32 +16,14 @@ public class PlayerTest {
     
     public PlayerTest() {
     }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of rollDice method, of class Player.
      */
     @Test
     public void testRollDice() {
-        System.out.println("rollDice");
-        Dice dice = new Dice(6);
-        Player instance = (Player)(new BalancedPlayer("George"));
-        instance.rollDice(dice);
+        PlayerImpl instance = new PlayerImpl();
+        instance.rollDice();
         assertThat(instance.getScore()).isBetween(1, 6);
     }
 
@@ -54,11 +32,8 @@ public class PlayerTest {
      */
     @Test
     public void testGetName() {
-        System.out.println("getName");
-        String expResult = "George";
-        Player instance = (Player)(new BalancedPlayer(expResult));
-        String result = instance.getName();
-        assertThat(result).isEqualTo(expResult);
+        PlayerImpl instance = new PlayerImpl();
+        assertThat(instance.getName()).isEqualTo("George");
     }
 
     /**
@@ -66,10 +41,8 @@ public class PlayerTest {
      */
     @Test
     public void testResetScore() {
-        System.out.println("resetScore");
-        Player instance = (Player)(new PlayerImpl());
-        Dice dice = new Dice(6);
-        instance.rollDice(dice);
+        PlayerImpl instance = new PlayerImpl();
+        instance.rollDice();
         instance.resetScore();
         assertThat(instance.getScore()).isEqualTo(0);
     }
@@ -77,7 +50,16 @@ public class PlayerTest {
     public class PlayerImpl extends Player {
 
         public PlayerImpl() {
-            super("");
+            super("George");
+        }
+        
+        @Override
+        public void play(Dice dice, int goalScore) {
+            
+        }
+        
+        public void rollDice() {
+            this.rollDice(new Dice(6));
         }
     }
     

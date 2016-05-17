@@ -5,6 +5,8 @@
  */
 package com.adrianschrader.pontoon;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  *
  * @author adrian
@@ -12,22 +14,25 @@ package com.adrianschrader.pontoon;
 public class Main {
     public static void main(String[] args) {
         try {
-            GameMaster master = new GameMaster(6, new Class<?>[] {
+            // Initalize the GameMaster with all possible Player classes
+            GameMaster master = new GameMaster(new Dice(6), new Class<?>[] {
                 BalancedPlayer.class,
                 AnxiousPlayer.class,
                 DumbPlayer.class,
                 StatisticianPlayer.class
             });
             
-            master.begin(21, 10);
-        } catch(Exception ex) {
+            // Start the game and give responses to the result
+            Result result = master.playRound(21);
+            if (result.isTie()) {
+                System.out.println("Es steht unendschieden!");
+            } else {
+                System.out.println(result.getWinner().getName() + " hat mit " + result.getWinner().getScore() + " Punkten gewonnen!");
+            }
+            
+        } catch(IllegalAccessException | InstantiationException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException ex) {
+            // After unforseen changes to the reflective invocations, a handled error occurs
+            System.err.println(ex.toString());
         }
-        
-        
-        /**NaivePlayer player = new NaivePlayer("George");
-        Dice dice = new Dice(6);
-        ((Player)player).play(dice);
-        
-        System.out.println(player.getScore());**/
     }
 }

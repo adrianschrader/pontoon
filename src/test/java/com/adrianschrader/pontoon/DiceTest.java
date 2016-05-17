@@ -20,33 +20,14 @@ public class DiceTest {
     
     public DiceTest() {
     }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of getFaces method, of class Dice.
      */
     @org.junit.Test
     public void testGetFaces() {
-        System.out.println("getFaces");
-        Dice instance = new Dice(8);
-        int expResult = 8;
-        int result = instance.getFaces();
-        assertThat(result).isEqualTo(expResult);
+        Dice dice = new Dice(8);
+        assertThat(dice.getFaces()).isEqualTo(8);
     }
     
     /**
@@ -54,11 +35,17 @@ public class DiceTest {
      */
     @org.junit.Test
     public void testGetOutcomes() {
-        System.out.println("getOutcomes");
-        Dice instance = new Dice(4);
-        int[] expResult = new int[] { 1, 2, 3, 4 };
-        int[] result = instance.getOutcomes();
-        assertThat(result).isEqualTo(expResult);
+        Dice dice = new Dice(4);
+        assertThat(dice.getOutcomes()).isEqualTo(new int[] { 1, 2, 3, 4 });
+    }
+    
+    /**
+     * Test of getMean method, of class Dice.
+     */
+    @org.junit.Test
+    public void testGetMean() {
+        Dice dice = new Dice(6);
+        assertThat(dice.getMean()).isEqualTo(3.5);
     }
 
     /**
@@ -66,13 +53,19 @@ public class DiceTest {
      */
     @org.junit.Test
     public void testRoll() {
-        System.out.println("roll");
-        Dice instance = new Dice();
-        int result = 0;
-        for (int i = 0; i < 1000; i++) {
-            result += instance.roll();
+        Dice dice = new Dice(6);
+
+        int result = 0,
+            sampleSize = 10000;
+        double uncertanty = 0.1d,
+               mean = dice.getMean();
+        
+        // Throw the dice several times, average the result and expect it to be
+        // in an uncertanty range
+        for (int i = 0; i < sampleSize; i++) {
+            result += dice.roll();
         }
-        assertThat(result / 1000.0).isBetween(3.4d, 3.6d);
+        assertThat((double)result / sampleSize).isBetween(mean - uncertanty, mean + uncertanty);
     }
     
 }
